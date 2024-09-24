@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat ROF</title>
+    <style>
+        .chat-container {
+            width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+        }
+        .chat-container h1 {
+            text-align: center;
+        }
+        .chat-container textarea {
+            width: 95%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .chat-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-container button:hover {
+            background-color: #45a049;
+        }
+        .chat-container .answer {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chat ROF</h1>
+        <textarea id="question" placeholder="Faça sua pergunta aqui..."></textarea>
+        <button id="ask-button">Perguntar</button>
+        <div class="answer" id="answer"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#ask-button').click(function() {
+                const question = $('#question').val();
+                if (question.trim() === "") {
+                    alert("Por favor, insira uma pergunta.");
+                    return;
+                }
+
+                $.ajax({
+                    url: 'http://localhost:5000/ask',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ question: question }),
+                    success: function(response) {
+                        console.log(response.score);
+                        $('#answer').html('<h2>Resposta:</h2><p>' + response.answer + '</p><p>'+response.score+'</p>');
+                    },
+                    error: function(error) {
+                        $('#answer').html('<p>Ocorreu um erro. Por favor, tente novamente.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
